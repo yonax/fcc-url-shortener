@@ -1,0 +1,100 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>freeCodeCamp URL Shortener Microservice</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="URL Shortener Microservice">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <style>
+        html, body {
+            padding: 0; margin: 0;
+            height: 100%;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-flow: column;
+            background:  #4791D2;
+            font-family: 'Roboto', sans-serif;
+        }
+        form {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            align-items: center;
+        }
+        input, input:active, input:focus {
+            font-size: 2em;
+            border: 0; margin: 0; outline: 0;
+            padding: 0.5em;
+            background: transparent;
+            font-family: 'Roboto', sans-serif;
+        }
+        input[name="url"] {
+            background: white;
+            border-radius: 10px 0 0 10px;
+        }
+        input[type="submit"] {
+            color: white;
+            border-radius: 0 10px 10px 0;
+            background: #F8AE45;
+        }
+        input[type="submit"]:hover {
+            background: #F89406;
+        }
+        .output {
+            font-size: 1.5em;
+        }
+        .error {
+            color: maroon;
+        }
+        h3 {
+            color: lightgrey;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>freeCodeCamp URL Shortener Microservice</h3>
+
+    <form method="POST">
+        <input name="url" type="url" placeholder="paste a url" autocomplete="off" autofocus >
+        <input type="submit" value="Short it!">
+    </form>
+    <div class=output>
+
+    </div>
+    <script>
+        var $ = document.querySelector.bind(document);
+        var form = $('form');
+        var url_input = $('input[name="url"]');
+        var output = $('.output');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const original_url = url_input.value;
+            if (!original_url) {
+                return;
+            }
+            fetch('/', {
+                method: 'POST',
+                headers: new Headers({
+                    'Content-type': 'application/json'
+                }),
+                body: JSON.stringify({ url:  original_url })
+            })
+            .then(response => response.json())
+            .then(response => {
+                if (response.error) {
+                    output.innerHTML = `<p class="error">${response.error}</p>`;  
+                } else {
+                    var short = response.short_url;
+                    output.innerHTML = `Short link: <a href="${short}">${short}</a>`;
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
